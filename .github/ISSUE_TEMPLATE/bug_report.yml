@@ -43,7 +43,7 @@ body:
 - type: textarea
   attributes: 
     label: "Output of /teama version" 
-    description: "Paste the output of /teama veresion here"
+    description: "Paste the output of /teama veresion here, there is no version named 'latest'"
   validations:
     required: true
 - type: textarea
