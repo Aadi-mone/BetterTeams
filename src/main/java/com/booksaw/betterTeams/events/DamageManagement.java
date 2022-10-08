@@ -1,12 +1,16 @@
 package com.booksaw.betterTeams.events;
 
-import com.booksaw.betterTeams.Main;
-import com.booksaw.betterTeams.Team;
+import java.util.Collection;
+import java.util.Objects;
+
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -14,8 +18,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.Collection;
-import java.util.Objects;
+import com.booksaw.betterTeams.Main;
+import com.booksaw.betterTeams.Team;
 
 /**
  * This class is used to ensure that members of the same team cannot hit each
@@ -39,7 +43,7 @@ public class DamageManagement implements Listener {
 	 *
 	 * @param e the damage event
 	 */
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
 	public void onDamage(EntityDamageByEntityEvent e) {
 
 		if (!(e.getEntity() instanceof Player)) {
@@ -75,7 +79,18 @@ public class DamageManagement implements Listener {
 					// they are on the same team
 					e.setCancelled(true);
 				}
-			}
+			} else if (e.getDamager() instanceof TNTPrimed) {
+				TNTPrimed explosive = (TNTPrimed) e.getDamager();
+				Entity source = explosive.getSource();
+				if (source instanceof Player
+						&& !Objects.requireNonNull(Team.getTeam((Player) source)).canDamage(temp, (Player) source)) {
+					// they are on the same team
+					if (disableSelf && source == e.getEntity()) {
+						return;
+					}
+					e.setCancelled(true);
+				}
+			} 
 		} catch (NullPointerException ex) {
 			// thrown if the players team is null
 		}

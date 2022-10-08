@@ -163,8 +163,10 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 	@Override
 	protected void deleteTeamStorage(Team team) {
-		teamNameLookup.remove(team.getName().toLowerCase());
-		saveTeamNameLookup();
+		if (team.getName() != null) {
+			teamNameLookup.remove(team.getName().toLowerCase());
+			saveTeamNameLookup();
+		}
 
 		File f = new File(SeparatedYamlTeamStorage.getTeamSaveFile(), team.getID() + ".yml");
 
@@ -226,7 +228,7 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 		for (int i = 0; i < teams.size(); i++) {
 			rankedTeamsStr[i] = teams.get(i).name;
-			if (isLoaded(getTeamUUID(teams.get(i).name))) {
+			if (teams.get(i).name != null && isLoaded(getTeamUUID(teams.get(i).name))) {
 				Team team = getTeam(teams.get(i).name);
 				team.setTeamRank(i);
 			}
@@ -260,7 +262,7 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 		for (int i = 0; i < teams.size(); i++) {
 			rankedTeamsStr[i] = teams.get(i).name;
-			if (isLoaded(getTeamUUID(teams.get(i).name))) {
+			if (teams.get(i).name != null && isLoaded(getTeamUUID(teams.get(i).name))) {
 				Team team = getTeam(teams.get(i).name);
 				team.setTeamRank(i);
 			}
@@ -289,7 +291,7 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 		for (int i = 0; i < teams.size(); i++) {
 			rankedTeamsStr[i] = teams.get(i).name;
-			if (isLoaded(getTeamUUID(teams.get(i).name))) {
+			if (teams.get(i).name != null && isLoaded(getTeamUUID(teams.get(i).name))) {
 				Team team = getTeam(teams.get(i).name);
 				team.setTeamRank(i);
 			}
@@ -455,22 +457,28 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 			UUID teamUUID = UUID.fromString(f.getName().replace(".yml", ""));
 
-			String teamName = config.getString(StoredTeamValue.NAME.getReference()).toLowerCase();
+			try {
 
-			// the file is invalid
-			if (teamName == null || teamName.length() == 0) {
-				continue;
-			}
+				String teamName = config.getString(StoredTeamValue.NAME.getReference()).toLowerCase();
 
-			teamNameLookup.put(teamName, teamUUID);
+				// the file is invalid
+				if (teamName == null || teamName.length() == 0) {
+					continue;
+				}
 
-			for (String str : config.getStringList("players")) {
-				UUID playerUUID = UUID.fromString(str.split(",")[0]);
-				playerLookup.put(playerUUID, teamUUID);
-			}
+				teamNameLookup.put(teamName, teamUUID);
 
-			for (String str : config.getStringList("chests")) {
-				chestClaims.put(str, teamUUID);
+				for (String str : config.getStringList("players")) {
+					UUID playerUUID = UUID.fromString(str.split(",")[0]);
+					playerLookup.put(playerUUID, teamUUID);
+				}
+
+				for (String str : config.getStringList("chests")) {
+					chestClaims.put(str, teamUUID);
+				}
+			} catch (Exception e) {
+				Bukkit.getLogger()
+						.warning("Could not load team `" + f.getName() + "` as file is invalid YAML, ignoring file");
 			}
 		}
 

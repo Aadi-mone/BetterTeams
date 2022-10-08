@@ -214,6 +214,15 @@ permissions:
    betterTeams.admin.score.remove:
       default: op
       description: gives access to the command /teama score remove
+   betterTeams.admin.money.add:
+      default: op
+      description: gives access to the command /teama money add
+   betterTeams.admin.money.set:
+      default: op
+      description: gives access to the command /teama money set
+   betterTeams.admin.money.remove:
+      default: op
+      description: gives access to the command /teama money remove
    betterTeams.admin.color:
       default: op
       description: gives access to the command /teama color
@@ -244,7 +253,11 @@ permissions:
    betterTeams.admin.chest.enable:
       default: op
       description: gives access to the command /teama chest enableclaims
-   betterTEams.admin.chest.disable:
+   betterTeams.admin.chest.disable:
       default: op
       description: gives access to the command /teama chest disableclaims
+   betterTeams.chest.bypass:
+      default: op
+      description: Bypass chest claims
+      
       
