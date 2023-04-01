@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -77,6 +78,9 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 	@Override
 	public boolean isTeam(String name) {
+		if(name == null) {
+			return false;
+		}
 		return teamNameLookup.containsKey(name.toLowerCase());
 	}
 
@@ -217,9 +221,20 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 		for (File f : folder.listFiles()) {
 			// team has already been resetS
-			YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
-			teams.add(new IntCrossReference(yamlConfig.getString(StoredTeamValue.NAME.getReference()),
-					yamlConfig.getInt(StoredTeamValue.SCORE.getReference())));
+			try {
+				YamlConfiguration yamlConfig = new YamlConfiguration();
+				yamlConfig.load(f);
+				String name = yamlConfig.getString(StoredTeamValue.NAME.getReference());
+				int score = yamlConfig.getInt(StoredTeamValue.SCORE.getReference());
+				
+				if(name == null || name == "") {
+					throw new Exception();
+				}
+				
+				teams.add(new IntCrossReference(name, score));
+			} catch (Exception e) {
+				Bukkit.getLogger().severe("UNABLE TO READ TEAM DATA FROM " + f);
+			}
 		}
 
 		teams.sort((t1, t2) -> t2.value - t1.value);
@@ -244,9 +259,16 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 
 		for (File f : folder.listFiles()) {
 			// team has already been resetS
-			YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
-			teams.add(new DoubleCrossReference(yamlConfig.getString(StoredTeamValue.NAME.getReference()),
-					yamlConfig.getDouble(StoredTeamValue.MONEY.getReference())));
+			try {
+				YamlConfiguration yamlConfig = new YamlConfiguration();
+				yamlConfig.load(f);
+				teams.add(new DoubleCrossReference(yamlConfig.getString(StoredTeamValue.NAME.getReference()),
+						yamlConfig.getDouble(StoredTeamValue.MONEY.getReference())));
+
+			} catch (IOException | InvalidConfigurationException e) {
+				Bukkit.getLogger().severe("UNABLE TO READ TEAM DATA FROM " + f);
+			}
+
 		}
 
 		teams.sort((t1, t2) -> {
@@ -278,11 +300,14 @@ public class SeparatedYamlStorageManager extends YamlStorageManager implements L
 		List<IntCrossReference> teams = new ArrayList<>();
 		for (File f : folder.listFiles()) {
 			// team has already been resetS
-
-			YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
-
-			teams.add(new IntCrossReference(yamlConfig.getString(StoredTeamValue.NAME.getReference()),
-					yamlConfig.getStringList("players").size()));
+			try {
+				YamlConfiguration yamlConfig = new YamlConfiguration();
+				yamlConfig.load(f);
+				teams.add(new IntCrossReference(yamlConfig.getString(StoredTeamValue.NAME.getReference()),
+						yamlConfig.getStringList("players").size()));
+			} catch (Exception e) {
+				Bukkit.getLogger().severe("UNABLE TO READ TEAM DATA FROM " + f);
+			}
 		}
 
 		teams.sort((t1, t2) -> t2.value - t1.value);

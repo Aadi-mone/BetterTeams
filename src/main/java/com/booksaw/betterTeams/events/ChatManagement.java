@@ -1,9 +1,8 @@
 package com.booksaw.betterTeams.events;
 
-import com.booksaw.betterTeams.Main;
-import com.booksaw.betterTeams.Team;
-import com.booksaw.betterTeams.TeamPlayer;
-import com.booksaw.betterTeams.message.MessageManager;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,9 +11,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import com.booksaw.betterTeams.Main;
+import com.booksaw.betterTeams.Team;
+import com.booksaw.betterTeams.TeamPlayer;
+import com.booksaw.betterTeams.message.MessageManager;
 
 public class ChatManagement implements Listener {
 
@@ -47,7 +47,11 @@ public class ChatManagement implements Listener {
 
 		TeamPlayer teamPlayer = team.getTeamPlayer(p);
 
-		if ((Objects.requireNonNull(teamPlayer).isInTeamChat() || teamPlayer.isInAllyChat())
+		if(teamPlayer == null) {
+			throw new IllegalStateException("Player " + p.getName() + " is registered to be in a team, yet has no playerdata associated with that team");
+		}
+		
+		if ((teamPlayer.isInTeamChat() || teamPlayer.isInAllyChat())
 				&& (event.getMessage().startsWith("!") && event.getMessage().length() > 1)) {
 			event.setMessage(event.getMessage().substring(1));
 		} else if (teamPlayer.isInTeamChat()) {

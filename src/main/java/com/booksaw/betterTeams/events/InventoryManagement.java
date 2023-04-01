@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 
 import com.booksaw.betterTeams.Team;
 import com.booksaw.betterTeams.message.MessageManager;
@@ -17,8 +18,9 @@ public class InventoryManagement implements Listener {
 
 	@EventHandler
 	public void onClose(InventoryCloseEvent e) {
-		
-				if (!e.getView().getTitle().equals(MessageManager.getMessage("echest.echest"))) {
+
+		if (e.getView().getType() != InventoryType.CHEST || !e.getView().getTitle().equals(MessageManager.getMessage("echest.echest"))) {
+
 			return;
 		}
 		Team t = adminViewers.get((Player) e.getPlayer());
@@ -30,10 +32,7 @@ public class InventoryManagement implements Listener {
 			}
 		}
 
-
-
 		adminViewers.remove((Player) e.getPlayer());
-
 		t.saveEchest();
 
 	}

@@ -577,6 +577,61 @@ Bug Fixes:
 - Fixed case issue with `inteam` placeholder (#371)
 - Fixed bug with event priority not being set for Damage Managerment
 
+4.6.0:
+
+Features: 
+- Added support for asynchronous command execution (#317 #396)
+- Added Italian translations - credit Bern (discord)
+
+Improvements
+- Added missing spanish translations - Credit Casho (discord)
+
+Bug Fixes: 
+- Fixed bug with error message not giving information about the error itself (#390)
+- Fixed bug with error message not giving tracable information to fix the problem (#394)
+
+4.6.1:
+
+Bug Fixes:
+- Fixed bug with errors being thrown when players join
+
+4.6.1:
+
+Improvements: 
+- Added language selected to /teama  version
+
+4.6.2:
+
+Improvements:
+- Fixed issue with polish translations (#404) - Credit Edekoo (discord)
+
+Bug Fixes:
+- Fixed bug causing echest contents to not be saved (#407) 
+- Fixed issue with admins running the echest command (#402)
+- Fixed bug when invalid files are within the teaminfo folder (#400)
+
+4.6.3:
+
+Improvements:
+- Updated to the latest version of zKoth (#418, #188) - Credit abilnf (GitHub) and Derddy (Discord) 
+- Added missing Spanish translations - Credit mattyhd0 (discord)
+
+Bug Fixes:
+- Fixed typo in polish translations - Credit Edekoo (discord)
+- Fixed issue causing holographic displays to not work (#416)
+- Fixed issue causing teleports to deleted worlds to throw errors (#415)
+- Fixed issue with unclaiming chests (#412)
+
+4.6.4:
+
+Features: 
+- Added Turkish language support (#421) - Credit !11 (Discord)
+- Added Vietnamese language support (#421) - Credit Shelly (Discord)
+
+Bug Fixes:
+- Change System.out to JavaPlugin#getLogger (#420) - Credit TonimatasDEV (GitHub)
+- Fix issue with player tp delay when the world changes (#419)
+- UltimateClaims - fixed issue with disbanding team not disbanding claim (#425)
 
 Headings: 
 Features: 

@@ -25,22 +25,28 @@ public class PlayerTeleport {
 	 * @param location  the location to teleport them to
 	 * @param reference the reference for the message that should be sent when the
 	 *                  player is teleported
+	 * @throws Exception 
 	 */
-	public PlayerTeleport(Player player, Location location, String reference) {
+	public PlayerTeleport(Player player, Location location, String reference) throws Exception {
+		if (location == null || location.getWorld() == null) {
+			throw new Exception("Location or world is null");
+		}
+		
 		this.player = player;
 		this.location = location;
 		this.reference = reference;
 
 		this.playerLoc = player.getLocation();
 
+		
 		if (player.hasPermission("betterteams.warmup.bypass")) {
-			runTp();
+			Bukkit.getScheduler().runTask(Main.plugin, this::runTp);
 			return;
 		}
 
 		int wait = Main.plugin.getConfig().getInt("tpDelay");
 		if (wait <= 0) {
-			runTp();
+			Bukkit.getScheduler().runTask(Main.plugin, this::runTp);
 			return;
 		}
 
@@ -63,7 +69,7 @@ public class PlayerTeleport {
 
 	public void runTp() {
 		if (location == null || location.getWorld() == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("Location = " + location + " world is = " + ((location == null) ? location.getWorld() : "BLANK"));
 		}
 
 		PlayerTeleportEvent event = new PlayerTeleportEvent(player, player.getLocation(), location);
@@ -82,7 +88,7 @@ public class PlayerTeleport {
 			return true;
 		}
 
-		return playerLoc.distance(player.getLocation()) <= Math.abs(Main.plugin.getConfig().getInt("maxMove"));
+		return playerLoc.getWorld() == player.getLocation().getWorld() && playerLoc.distance(player.getLocation()) <= Math.abs(Main.plugin.getConfig().getInt("maxMove"));
 	}
 
 	public void cancel() {
